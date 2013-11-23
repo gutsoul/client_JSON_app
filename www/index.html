@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<script type="text/javascript" src="phonegap.js"></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<style>
+		button, input {
+			padding: 14px;
+		}
+	</style>
+</head>
+<body>
+<h1>Client register and get using JSON</h1>
+<br/>
+帳號 username:<input type="text" id="username" name="username" /> <br/>
+密碼 password:<input type="text" id="password" name="password" /> <br/>
+email:<input type="text" id="email" name="email" /> <br/>
+<button id="send_register_button" type="button">註冊 Register</button>
+<button id="get_register_button" type="button">從伺服端取得資料 Get reg data</button>
+<div id="users"></div>
+<script type="text/javascript" charset="utf-8">
+$("#send_register_button").click(function(){
+	var json = {};
+	json.username = $("#username").val();
+	json.password = $("#password").val();
+	json.email = $("#email").val();
+	var json = jQuery.parseJSON(JSON.stringify(json));
+	$.ajax({
+		dataType: "json",
+		url: 'http://www.aseanin.com/server.php?action=register',
+		data: json,
+		success: function (data) {
+			alert(data.CODE + ' '+ data.MESSAGE);
+			//Object {CODE: "200", MESSAGE: "Completed."} 
+		}
+	});
+});
+
+$("#get_register_button").click(function(){
+	$("#users").html('');
+	$.getJSON('http://www.aseanin.com/server.php', {'action':'get_user_list'}, function(data){
+		if(data){
+			$.each(data, function(k,v){
+				var html = k + ' ' + v.username + ' ' + v.password + ' ' + v.email + '<br/>';
+				$("#users").append(html);
+			});
+		};	
+	});
+});
+</script>
+</body>
+</html>
